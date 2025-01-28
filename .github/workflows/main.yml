@@ -21,9 +21,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-      
-    - name: Checkout
-      uses: actions/checkout@v2
 
     - name: "Hadolint"
       uses: jbergstroem/hadolint-gh-action@v1
@@ -33,12 +30,12 @@ jobs:
     - name: Helm Check
       uses: igabaydulin/helm-check-action@master
       env:
-          CHART_LOCATION: ./charts/helm-example/
-          CHART_VALUES: ./charts/helm-example/values.yaml
+          CHART_LOCATION: ./charts/helm-app/
+          CHART_VALUES: ./charts/helm-app/values.yaml
           
     - name: Lint Helm Charts
       run: |
-          helm lint ./charts/helm-example/
+          helm lint ./charts/helm-app/
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4

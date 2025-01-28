@@ -43,7 +43,7 @@ Region also will be changed in variables.tf
 Initialize Terraform workspace and provision rollout of EKS:
 
 ```bash
-sudo terrafor init
+sudo terraform init
 sudo terraform apply -auto-approve
 ```
 
@@ -53,7 +53,7 @@ Configure kubectl to work with EKS:
 sudo aws eks --region us-east-1 update-kubeconfig     --name ivanf-eks-training
 ```
 
-## GitHub actions. OIDC preparation
+## GitHub actions. OIDC and Telegram message preparation
 
 
 OpenID Connect (OIDC) Identity Provider for GitHub Actions, which help to configure workflows that request temporary, on-demand credentials from any service provider on the internet that supports OIDC authentication.
@@ -78,10 +78,38 @@ We have to configure AWS account ID and github repo which we is planned to have 
 ![screenshot](./pics/oidc-2.png)
 
 ```bash
-sudo terrafor init
+sudo terraform init
 sudo terraform apply -auto-approve
 ```
 
 ![screenshot](./pics/oidc-aws-iam.png)
 
 ![screenshot](./pics/oidc-aws-ecr.png)
+
+
+
+To send notification messages to Telegram we need to prepare two secret variable to be used by actions
+
+![screenshot](./pics/tgsecrets.png)
+
+Please follow this guide how to get Telegram token and chatid:
+
+[telegram messaging in github actions](https://github.com/appleboy/telegram-action)
+
+
+## GitHub actions. CI implementation
+
+[CI.yml](https://github.com/voyager1122/IBA-DEVOPS-PROJECT/.github/workflows/main.yml)
+
+
+Steps:
+ - Checkout report
+ - Dockerfile linter
+ - Helm chart linter
+ - Connect to AWS EKS
+ - Build docker image
+ - Update helm chart repo to be detedcted and fetched by ArgoCD later 
+ - Send notification message to Telegram
+ 
+ 
+ 
