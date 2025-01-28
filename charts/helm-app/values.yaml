@@ -1,0 +1,43 @@
+# Default values for helm-example.
+# This is a YAML-formatted file. Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  pullPolicy: IfNotPresent
+  repository: xxxxxxx.dkr.ecr.es-east-1.amazonaws.com/gitops-argocd
+  version: main-d3b9cf0
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+  name:
+
+podSecurityContext: {}
+
+securityContext: {}
+
+
+service:
+  type: LoadBalancer
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+
+  hosts:
+    - host: chart-app.local
+      paths: []
+  tls: []
+
+
+resources: {}
+
+nodeSelector: {}
+tolerations: []
+
+affinity: {}

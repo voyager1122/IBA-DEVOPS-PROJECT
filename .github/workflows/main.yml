@@ -1,0 +1,107 @@
+name: iba-project-gitops
+permissions:
+  id-token: write # required to use OIDC authentication
+  contents: write # required
+  actions: read
+  security-events: write
+  statuses: write
+
+on:
+  push:
+    branches: [ main ]
+env:
+  ECR_REPOSITORY: gitops-argocd
+
+jobs:
+  build:
+    name: Build and Pushing the Image
+    runs-on: ubuntu-latest
+
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: "Hadolint"
+      uses: jbergstroem/hadolint-gh-action@v1
+      with:
+          dockerfile: "./Dockerfile"
+          
+    - name: Helm Check
+      uses: igabaydulin/helm-check-action@master
+      env:
+          CHART_LOCATION: ./charts/helm-example/
+          CHART_VALUES: ./charts/helm-example/values.yaml
+          
+    - name: Lint Helm Charts
+      run: |
+          helm lint ./charts/helm-example/
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::443370672158:role/github-oidc
+        aws-region: us-east-1
+    - name: Test AWS Creds
+      run: aws sts get-caller-identity
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+           
+    - name: Build and tag image 
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: gitops-argocd
+
+      run: |
+        # Build a docker container and push it to ECR
+        git_hash=$(git rev-parse --short "$GITHUB_SHA")
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_REF##*/}-$git_hash .
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_REF##*/}-$git_hash"
+        echo "::set-output name=tag::$git_hash"
+
+        
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v4.1.1
+      with:
+        images: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}
+          
+    - name: Push image to Amazon ECR
+      id: push-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: gitops-argocd
+
+      run: |
+        echo "Pushing image to ECR..."
+        git_hash=$(git rev-parse --short "$GITHUB_SHA")
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_REF##*/}-$git_hash
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_REF##*/}-$git_hash"
+        
+
+    - name: Update Version
+      run: |
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          version=$(cat ./charts/helm-example/values.yaml | grep version: | awk '{print $2}')
+          sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./charts/helm-example/values.yaml
+          
+    - name: Commit and push changes
+      uses: devops-infra/action-commit-push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        commit_message: Version updated
+        
+    - name: send telegram message
+      uses: appleboy/telegram-action@master
+      with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.actor }} created commit!
+            Repository: ${{ github.repository }}
