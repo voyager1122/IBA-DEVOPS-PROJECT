@@ -40,12 +40,32 @@ Region also will be changed in variables.tf
 ![screenshot](./pics/vartf.png)
 
 
+Initialize Terraform workspace and provision rollout of EKS:
+
 ```bash
 sudo terrafor init
 sudo terraform apply -auto-approve
 ```
 
+Configure kubectl to work with EKS:
+
+```bash
+sudo aws eks --region us-east-1 update-kubeconfig     --name ivanf-eks-training
+```
 
 ## GitHub actions. OIDC preparation
+
+
+OpenID Connect (OIDC) Identity Provider for GitHub Actions, which help to configure workflows that request temporary, on-demand credentials from any service provider on the internet that supports OIDC authentication.
+
+So using OpenID Connect it's possible to remove the need to have keys stored in GitHub Actions.
+
+Steps:
+
+ - Configure AWS Identity and Access Management (IAM) in our AWS account to believe what the GitHub Actions Identity Provider says.
+ - Make an IAM role available to GitHub Actions entities with specific properties.
+ - Add an Actions workflow to request and use credentials from AWS.
+ 
+![screenshot](./pics/OIDC.png)
 
 
