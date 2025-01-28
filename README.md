@@ -68,4 +68,20 @@ Steps:
  
 ![screenshot](./pics/OIDC.png)
 
+[main.tf.yml](https://github.com/voyager1122/IBA-DEVOPS-PROJECT/blob/main/terraform-openid/main.tf)
 
+
+We have to configure AWS account ID and github repo which we is planned to have permit access to AWS ECR
+
+![screenshot](./pics/oidc-1.png)
+
+![screenshot](./pics/oidc-2.png)
+
+```bash
+sudo terrafor init
+sudo terraform apply -auto-approve
+```
+
+![screenshot](./pics/oidc-aws-iam.png)
+
+![screenshot](./pics/oidc-aws-ecr.png)
