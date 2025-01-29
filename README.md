@@ -171,5 +171,8 @@ https://github.com/dotdc/grafana-dashboards-kubernetes
 ![screenshot](./pics/argo-prometheus-grafana.png)
 
 
+![screenshot](./pics/global-dashboard.png)
+
+
 
  
