@@ -13,6 +13,7 @@ Recommended tool for CD in Kubernetes is ArgoCD.
  - Prepare AWS EKS using Terraform
  - GitHub actions setting CI part
  - Install ArgoCD in EKS for continious deployment
+ - Install Prometheus & Grafana for monitoring
 
 ![screenshot](./pics/flow.png)
 
@@ -99,7 +100,7 @@ Please follow this guide how to get Telegram token and chatid:
 
 ## GitHub actions. CI implementation
 
-[CI.yml](https://github.com/voyager1122/IBA-DEVOPS-PROJECT/.github/workflows/main.yml)
+[CI.yml](https://github.com/voyager1122/IBA-DEVOPS-PROJECT/blob/main/.github/workflows/main.yml)
 
 
 Steps:
@@ -143,6 +144,31 @@ We can check app's url in service:
 ![screenshot](./pics/lens-app-svc.png)
 
 
+The result is running web app in K8s cluster
+
+![screenshot](./pics/web-app.png)
+
+#### Monitoring. Installation of Prometheus and Grafana
+
+Prometheus and Grafana were installed by manifests.
+
+[prometheus.yaml](https://github.com/voyager1122/IBA-DEVOPS-PROJECT/blob/main/prometheus.yaml)
+
+[grafana.yaml](https://github.com/voyager1122/IBA-DEVOPS-PROJECT/blob/main/grafana.yaml)
+
+```yaml
+sudo kubectl apply -f prometheus.yaml
+sudo kubectl apply -f grafana.yaml
+```
+
+![screenshot](./pics/argo-prometheus-grafana.png)
+
+Dashboard were imported manually using dashboard ID
+
+https://github.com/dotdc/grafana-dashboards-kubernetes
+
+
+![screenshot](./pics/argo-prometheus-grafana.png)
 
 
 
