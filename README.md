@@ -105,11 +105,45 @@ Please follow this guide how to get Telegram token and chatid:
 Steps:
  - Checkout report
  - Dockerfile linter
- - Helm chart linter
+ - Helm chart linter 
  - Connect to AWS EKS
  - Build docker image
  - Update helm chart repo to be detedcted and fetched by ArgoCD later 
  - Send notification message to Telegram
  
+![screenshot](./pics/tg-message.png)
  
+## ArgoCD - continious deployment
+
+ArgoCD installed using Lens which was connected to EKS
+
+![screenshot](./pics/lens-1.png)
+ 
+![screenshot](./pics/lens-2.png)
+
+![screenshot](./pics/lens-3.png)
+
+
+Next step is to connect github as repo and add APP 
+
+![screenshot](./pics/argo-connect-repo.png)
+
+![screenshot](./pics/argo-app-svc.png)
+
+![screenshot](./pics/argo-app-svc.png)
+
+![screenshot](./pics/argo-app-status2.png)
+
+![screenshot](./pics/argo-app-status.png)
+
+We can check app's url in service:
+
+![screenshot](./pics/argo-app-svc-url.png)
+
+![screenshot](./pics/lens-app-svc.png)
+
+
+
+
+
  
